@@ -10,6 +10,15 @@ import time
 class IBApi(EWrapper, EClient):
     def __init__(self):
         EClient.__init__(self, self)
+    # Listen to the real time data
+    def realtimeBar(self, reqId, time: int, open_: float, high: float, low: float, close: float, volume: int, wap: float, count: int):
+        super().realtimeBar(reqId, time, open_, high, low, close, volume, wap, count)
+        try:
+            bot.on_bar_update(reqId, time, open_, high, low, close, volume, wap, count)
+        except Exception as e:
+            print("Error", e)
+    def error(self, reqId, errorCode: int, errorString: str):
+        return super().error(reqId, errorCode, errorString)
 
 class Bot():
     ib = None
@@ -20,9 +29,19 @@ class Bot():
         ib_thread.start()
         time.sleep(1)
         #get instruement
-
-    #run socket in an new thread
+        instrument = "AMZN"
+        contract = Contract()
+        contract.symbol = instrument
+        contract.secType = "STK"
+        contract.exchange = "SMART"
+        contract.currency = "USD"
+        #get data
+        self.ib.reqRealTimeBars(1, contract, 5, "TRADES", False, [])
+    #run socket in a sperated thread
     def run_loop(self):
         self.ib.run()
-
+    #Pass real time data to the bot
+    def on_bar_update(self, reqId, time, open_, high, low, close, volume, wap, count):
+        print("Time:", time, "Open:", open, "High:", high, "Low:", low, "Close:", close, "Volume:", volume, "Count:", count, "WAP:", wap)
+#start bot
 bot = Bot()
