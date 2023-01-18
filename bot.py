@@ -24,7 +24,7 @@ class Bot():
     ib = None
     def __init__(self):
         self.ib = IBApi()
-        self.ib.connect("127.0.0.1", 7497, 1)
+        self.ib.connect("127.0.0.1", 7497, 1) # change port to the one you are using
         ib_thread = threading.Thread(target=self.run_loop, daemon=True)
         ib_thread.start()
         time.sleep(1)
@@ -36,12 +36,30 @@ class Bot():
         contract.exchange = "SMART"
         contract.currency = "USD"
         #get data
-        self.ib.reqRealTimeBars(1, contract, 5, "TRADES", False, [])
+        self.ib.reqRealTimeBars(0, contract, 5, "TRADES", False, [])
+        #sumbit order
+        #create Order object
+        MktBuyOrder = Order()
+        MktBuyOrder.orderType = "MKT"
+        MktBuyOrder.action = "BUY"
+        MktBuyOrder.totalQuantity = 1
+        MktBuyOrder.eTradeOnly = False
+        MktBuyOrder.firmQuoteOnly = False
+        #create Contract object
+        contract = Contract()
+        contract.symbol = instrument
+        contract.secType = "STK"
+        contract.exchange = "SMART"
+        contract.primaryExchange = "ISLAND"
+        contract.currency = "USD"
+        #Place order
+        self.ib.placeOrder(2, contract, MktBuyOrder)
     #run socket in a sperated thread
     def run_loop(self):
         self.ib.run()
     #Pass real time data to the bot
     def on_bar_update(self, reqId, time, open_, high, low, close, volume, wap, count):
         print("Time:", time, "Open:", open, "High:", high, "Low:", low, "Close:", close, "Volume:", volume, "Count:", count, "WAP:", wap)
+
 #start bot
 bot = Bot()
