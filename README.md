@@ -10,7 +10,7 @@ It provides a basic framework for the reader to write down their strategy and do
 
 ## Motivation
 
-It comes from the trading bot I used in the 2017 Hong Kong Society of Financial Analysts - Hong Kong Exchanges and Clearing Ltd. Portfolio Management Competition.
+In 2015, I was obessed with trading and I wanted to build a trading bot to be used in the 2017 Hong Kong Society of Financial Analysts & Hong Kong Exchanges and Clearing Ltd. Portfolio Management Competition.
 
 ## Features
 
